@@ -206,13 +206,20 @@ print_section_data(uint8 *fileBuffer, Section *section)
    printf("\n\n");
 
    lineNumber = 0;
+<<<<<<< HEAD
    bytesPerLine = 64;
+=======
+>>>>>>> 3a4d2a790881da36233048d9fd4ba885678e94de
 
    printf("0x%08X    ", lineNumber);
 
    for(uint32 i = 0; i < section->dataSize; ++i)
      {
+<<<<<<< HEAD
        printf("%c",*(fileBuffer + section->dataAddress + i));
+=======
+       printf("%c ",*(fileBuffer + section->dataAddress + i));
+>>>>>>> 3a4d2a790881da36233048d9fd4ba885678e94de
        if((i+1)%bytesPerLine == 0)
 	 {
 	   lineNumber += bytesPerLine;
@@ -288,7 +295,11 @@ int main(int argc, char ** argv)
       executable = true;
     }
 
+<<<<<<< HEAD
   //Checks if the file is a valid OBJ
+=======
+  //Checks if the file is a valid LIB
+>>>>>>> 3a4d2a790881da36233048d9fd4ba885678e94de
   if(!executable)
     {
       uint16 magicNumber = *((uint16 *)fileBuffer);
@@ -301,6 +312,7 @@ int main(int argc, char ** argv)
  
   printf("Parsing %s\n\n",filename);
 
+<<<<<<< HEAD
   if(executable)
     {
       printf("EXECUTABLE FILE:\n\n");
@@ -310,6 +322,8 @@ int main(int argc, char ** argv)
       printf("COFF FILE:\n\n");
     }
 
+=======
+>>>>>>> 3a4d2a790881da36233048d9fd4ba885678e94de
   //Position of the parser in the file
   int pos = 0;
   uint16 sections = 0;
