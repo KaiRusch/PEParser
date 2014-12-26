@@ -1,3 +1,0 @@
-@echo off
-cl objParser.c
-del objParser.obj
