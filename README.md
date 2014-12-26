@@ -1,4 +1,11 @@
 PEParser
 ========
 A simple not fully complete parser written on a Christmas night by a bored person.
-Run the program in command line, with the name of the file you would like to parse as an argument.
+To Use:
+>Parser <filename> -options
+
+Options:
+Specify a section to look at:
+-S <section_name>
+Only show header
+-H
