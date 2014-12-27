@@ -44,7 +44,7 @@ void print_section_data(uint8 *fileBuffer, Section *section)
 
    printf("0x%08X    ", lineNumber);
 
-   for(uint32 i = 0; i < section->dataSize; ++i)
+   for(uint32 i = 0; i < section->physicalAddress; ++i)
      {
        printf("%02X ",*(fileBuffer + section->dataAddress + i));
        if((i+1)%bytesPerLine == 0)
@@ -56,13 +56,20 @@ void print_section_data(uint8 *fileBuffer, Section *section)
    printf("\n\n");
 
    lineNumber = 0;
-   bytesPerLine = 64;
+   bytesPerLine = 32;
 
    printf("0x%08X    ", lineNumber);
 
-   for(uint32 i = 0; i < section->dataSize; ++i)
+   for(uint32 i = 0; i < section->physicalAddress; ++i)
      {
-       printf("%c",*(fileBuffer + section->dataAddress + i));
+       if(*(fileBuffer + section->dataAddress + i) < 32)
+	 {
+	   printf(".");
+	 }
+       else 
+       {
+	 printf("%c",*(fileBuffer + section->dataAddress + i));
+       }
        if((i+1)%bytesPerLine == 0)
 	 {
 	   lineNumber += bytesPerLine;

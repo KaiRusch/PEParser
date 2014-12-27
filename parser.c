@@ -7,6 +7,10 @@
 uint8 *open_file(char *fileName)
 {
   FILE *objFile = fopen(fileName,"rb");
+  if(objFile == NULL)
+    {
+      return NULL;
+    }
   fseek(objFile,0L,SEEK_END);
   int fileSize = ftell(objFile);
   fseek(objFile,0L,SEEK_SET);
@@ -60,9 +64,21 @@ int main(int argc, char ** argv)
 	    }
 	  if(argv[i][1] == 'S')
 	    {
-	      options = options | SECTION;
-	      ++i;
-	      specifiedSection = argv[i];
+	      if(i == argc - 1)
+		{
+		  printf("Please enter a section name after -S\n");
+		}
+
+	      else if(argv[i+1][0]!='.')
+		{
+		  printf("Please enter a valid section name after -S\n");
+		}
+	      else
+		{
+		  options = options | SECTION;
+		  ++i;
+		  specifiedSection = argv[i];
+		}
 	    }
 	}
       else
