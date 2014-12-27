@@ -1,11 +1,23 @@
 PEParser
 ========
-A simple not fully complete parser written on a Christmas night by a bored person.
-To Use:
->Parser <filename> -options
+Can parse and display information about Windows EXE and OBJ files;
 
-Options:
+**To Use:**
+
+`>parser <filename> -options`
+
+**Options:**
+
 Specify a section to look at:
--S <section_name>
+
+`-S <section_name>`
+
 Only show header
--H
+
+`-H`
+
+**Example:**
+
+Output the .text section header of a.exe
+
+`>parser a.exe -S .text -H`
