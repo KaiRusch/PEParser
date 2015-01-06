@@ -1,4 +1,5 @@
 #include "parser.h"
+#include <math.h>
 
 
 void print_file_header(FileHeader *fileHeader)
@@ -29,8 +30,8 @@ void print_section_info(Section *section)
     }
   printf("\n");
 
-  printf("Physical Address: %X\nVirtual Address %X\nData Size: %X\nData Address: %X\nRelocation Address: %X\nLine Numbers Address: %X\nRelocation Entries: %X\nLine Number Entries: %X\nFlag: %X\n\n",
-	 section->physicalAddress,section->virtualAddress,section->dataSize,section->dataAddress,section->relocationAddress,section->lineNumberAddress,section->relocEntries,section->lineNumberEntries,section->flagBits);
+  printf("VirtualSize: %X\nVirtual Address %X\nData Size: %X\nData Address: %X\nRelocation Address: %X\nLine Numbers Address: %X\nRelocation Entries: %X\nLine Number Entries: %X\nFlag: %X\n\n",
+	 section->virtualSize,section->virtualAddress,section->dataSize,section->dataAddress,section->relocationAddress,section->lineNumberAddress,section->relocEntries,section->lineNumberEntries,section->flagBits);
 
 }
 
@@ -44,7 +45,7 @@ void print_section_data(uint8 *fileBuffer, Section *section)
 
    printf("0x%08X    ", lineNumber);
 
-   for(uint32 i = 0; i < section->physicalAddress; ++i)
+   for(uint32 i = 0; i < section->dataSize; ++i)
      {
        printf("%02X ",*(fileBuffer + section->dataAddress + i));
        if((i+1)%bytesPerLine == 0)
@@ -56,11 +57,11 @@ void print_section_data(uint8 *fileBuffer, Section *section)
    printf("\n\n");
 
    lineNumber = 0;
-   bytesPerLine = 32;
+   bytesPerLine = 64;
 
    printf("0x%08X    ", lineNumber);
 
-   for(uint32 i = 0; i < section->physicalAddress; ++i)
+   for(uint32 i = 0; i < section->dataSize; ++i)
      {
        if(*(fileBuffer + section->dataAddress + i) < 32)
 	 {

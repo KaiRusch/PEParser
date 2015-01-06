@@ -68,7 +68,7 @@ typedef struct
 typedef struct
 {
   uint8 *sectionName;
-  uint32 physicalAddress;
+  uint32 virtualSize;
   uint32 virtualAddress;
   uint32 dataSize;
   uint32 dataAddress;

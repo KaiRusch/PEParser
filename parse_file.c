@@ -90,7 +90,7 @@ void parse_section(uint8 *fileBuffer, int *pos, Section *section)
 {
   section->sectionName = (uint8 *)(fileBuffer + *pos);
   *pos+=sizeof(char)*8;
-  section->physicalAddress = *((uint32 *)(fileBuffer + *pos));
+  section->virtualSize = *((uint32 *)(fileBuffer + *pos));
   *pos+=sizeof(uint32);
   section->virtualAddress = *((uint32 *)(fileBuffer + *pos));
   *pos+=sizeof(uint32);

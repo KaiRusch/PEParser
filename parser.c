@@ -21,6 +21,24 @@ uint8 *open_file(char *fileName)
   return fileBuffer;
 }
 
+bool matching_names(char *specifiedSection, char *sectionName)
+{
+  for(int nameIndex = 0; nameIndex < 8; ++nameIndex)
+    {
+      if(*(specifiedSection + nameIndex) != 
+	 *(sectionName + nameIndex))
+	{
+	  return false;
+	}
+      if(*(specifiedSection + nameIndex) == '\0' &&
+	 *(sectionName + nameIndex) == '\0')
+	{
+	  break;
+	}
+    }
+  return true;
+}
+
 void parse_file(uint8 *fileBuffer, int *pos, FileHeader *fileHeader, OptionalHeader *optionalHeader, Section **sections, Symbol **symbols)
 {
   parse_file_header(fileBuffer,pos,fileHeader);
@@ -31,16 +49,20 @@ void parse_file(uint8 *fileBuffer, int *pos, FileHeader *fileHeader, OptionalHea
     }
   *pos += fileHeader->optHeaderSize;
 
+  //Alocate memory for the section headers and symbols
   *sections = (Section *)malloc(fileHeader->sections*sizeof(Section));
+  *symbols = (Symbol *)malloc(fileHeader->numOfSymbols*sizeof(Symbol));
+
   for(int sectionIndex = 0; sectionIndex < fileHeader->sections; ++sectionIndex)
     {
-      parse_section(fileBuffer,pos,*sections + sectionIndex);
+      Section *section = *sections + sectionIndex;
+      parse_section(fileBuffer,pos,section);
     }
 
-  *symbols = (Symbol *)malloc(fileHeader->numOfSymbols*sizeof(Symbol));
   for(int symbolIndex = 0; symbolIndex < fileHeader->numOfSymbols; ++symbolIndex)
     {
-      parse_symbol(fileBuffer,pos,*symbols + symbolIndex);
+      Symbol *symbol = *symbols + symbolIndex;
+      parse_symbol(fileBuffer,pos,symbol);
     }
 }
 
@@ -69,9 +91,9 @@ int main(int argc, char ** argv)
 		  printf("Please enter a section name after -S\n");
 		}
 
-	      else if(argv[i+1][0]!='.')
+	      else if(argv[i+1][0]=='-')
 		{
-		  printf("Please enter a valid section name after -S\n");
+		  printf("Please enter a section name after -S\n");
 		}
 	      else
 		{
@@ -131,7 +153,7 @@ int main(int argc, char ** argv)
 	}
     }
  
-  printf("Parsing %s\n\n",filename);
+  printf("\n\nPARSING %s\n\n",filename);
 
   if(executable)
     {
@@ -170,38 +192,22 @@ int main(int argc, char ** argv)
   
   for(int sectionIndex = 0; sectionIndex < fileHeader.sections; ++sectionIndex)
     {
+      Section *section = sections + sectionIndex;
+
       bool printSection = true;
 
       if(options & SECTION)
 	{
-	  bool matchingNames = true;
-
-	  for(int nameIndex = 0; nameIndex < 8; ++nameIndex)
-	    {
-	      if(*(specifiedSection + nameIndex) != 
-		 *((sections + sectionIndex)->sectionName + nameIndex))
-		{
-		  matchingNames = false;
-		}
-	      if(*(specifiedSection + nameIndex) == '\0' &&
-		 *((sections + sectionIndex)->sectionName + nameIndex) == '\0')
-		{
-		  break;
-		}
-	    }
-
-	  if(!matchingNames)
-	    {
-	      printSection = false;
-	    }
+	  
+	  printSection = matching_names(specifiedSection,section->sectionName);
 	}
       
       if(printSection)
 	{
-	  print_section_info(sections + sectionIndex);
+	  print_section_info(section);
 	  if(!(options & HEADERS_ONLY))
 	    {
-	      print_section_data(fileBuffer, sections + sectionIndex);
+	      print_section_data(fileBuffer,section);
 	    }
 	}
     }
