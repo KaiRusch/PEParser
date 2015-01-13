@@ -113,7 +113,7 @@ void parse_section(uint8 *fileBuffer, int *pos, Section *section)
 //Parses a symbol
 void parse_symbol(uint8 *fileBuffer, int *pos, Symbol *symbol)
 {
-  symbol->symbolName = (uint8*)(fileBuffer + *pos);
+  symbol->symbolName = (uint8 *)(fileBuffer + *pos);
   *pos+=8*sizeof(uint8);
   symbol->symbolNumber = *((uint32 *)(fileBuffer + *pos));
   *pos+=sizeof(uint32);
@@ -126,3 +126,41 @@ void parse_symbol(uint8 *fileBuffer, int *pos, Symbol *symbol)
   symbol->auxilaryCount = *((uint8 *)(fileBuffer + *pos));
   *pos+=sizeof(uint8);
 }
+
+//Parses entire COFF file
+void parse_file(uint8 *fileBuffer, int *pos, FileHeader *fileHeader, OptionalHeader *optionalHeader, Section **sections, Symbol **symbols)
+{
+  //Parse header at start of file
+  parse_file_header(fileBuffer,pos,fileHeader);
+  
+  //If an optional header exists parse it
+  if(fileHeader->optHeaderSize)
+    {
+      parse_opt_header(fileBuffer,*pos,optionalHeader);
+    }
+
+  //Set pos to the location after the header file
+  *pos += fileHeader->optHeaderSize;
+
+  //Alocate memory for the section headers and symbols
+  *sections = (Section *)malloc(fileHeader->sections*sizeof(Section));
+  *symbols = (Symbol *)malloc(fileHeader->numOfSymbols*sizeof(Symbol));
+
+  //Parse sections
+  for(int sectionIndex = 0; sectionIndex < fileHeader->sections; ++sectionIndex)
+    {
+      Section *section = *sections + sectionIndex;
+      parse_section(fileBuffer,pos,section);
+    }
+
+  //Set pos to the location of the symbol table
+  *pos = fileHeader->symbolOffset;
+
+  //Parse the symbols
+  for(int symbolIndex = 0; symbolIndex < fileHeader->numOfSymbols; ++symbolIndex)
+    {
+      Symbol *symbol = *symbols + symbolIndex;
+      parse_symbol(fileBuffer,pos,symbol);
+    }
+}
+

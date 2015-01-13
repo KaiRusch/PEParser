@@ -90,5 +90,8 @@ void print_symbol(Symbol *symbol)
       printf("%c",*(symbol->symbolName + nameIndex));
     }
   printf("\n");
+
+  printf("Symbol Number: %X\nSection Number: %X\nSymbol Type: %X\nStorage Class: %X\nAuxilary Count: %X\n\n",symbol->symbolNumber,symbol->sectionNumber,symbol->symbolType,symbol->storageClass,symbol->auxilaryCount);
+
 }
 

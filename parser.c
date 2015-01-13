@@ -39,32 +39,6 @@ bool matching_names(char *specifiedSection, char *sectionName)
   return true;
 }
 
-void parse_file(uint8 *fileBuffer, int *pos, FileHeader *fileHeader, OptionalHeader *optionalHeader, Section **sections, Symbol **symbols)
-{
-  parse_file_header(fileBuffer,pos,fileHeader);
-  
-  if(fileHeader->optHeaderSize)
-    {
-      parse_opt_header(fileBuffer,*pos,optionalHeader);
-    }
-  *pos += fileHeader->optHeaderSize;
-
-  //Alocate memory for the section headers and symbols
-  *sections = (Section *)malloc(fileHeader->sections*sizeof(Section));
-  *symbols = (Symbol *)malloc(fileHeader->numOfSymbols*sizeof(Symbol));
-
-  for(int sectionIndex = 0; sectionIndex < fileHeader->sections; ++sectionIndex)
-    {
-      Section *section = *sections + sectionIndex;
-      parse_section(fileBuffer,pos,section);
-    }
-
-  for(int symbolIndex = 0; symbolIndex < fileHeader->numOfSymbols; ++symbolIndex)
-    {
-      Symbol *symbol = *symbols + symbolIndex;
-      parse_symbol(fileBuffer,pos,symbol);
-    }
-}
 
 int main(int argc, char ** argv)
 {
@@ -210,6 +184,12 @@ int main(int argc, char ** argv)
 	      print_section_data(fileBuffer,section);
 	    }
 	}
+    }
+
+  for(int i = 0; i < fileHeader.numOfSymbols; ++i)
+    {
+      Symbol *symbol = symbols + i;
+      print_symbol(symbol);
     }
 
   return 0;
